@@ -356,16 +356,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openPlayer(video: VideoItem, position: Int) {
+        // Get the correct playlist based on current context
         val playlist = if (isShowingFolders) {
+            // If clicking from folders view (shouldn't happen normally)
             allVideos
         } else {
-            videoAdapter.currentList
+            // Get current displayed videos
+            videoAdapter.currentList.toList()
         }
+        
+        // Find the correct index of clicked video in the playlist
+        val videoIndex = playlist.indexOfFirst { it.id == video.id }.takeIf { it >= 0 } ?: position
         
         val intent = Intent(this, PlayerActivity::class.java).apply {
             putExtra(PlayerActivity.EXTRA_VIDEO_URI, video.uri.toString())
             putExtra(PlayerActivity.EXTRA_VIDEO_TITLE, video.title)
-            putExtra(PlayerActivity.EXTRA_VIDEO_POSITION, position)
+            putExtra(PlayerActivity.EXTRA_VIDEO_POSITION, videoIndex)
             putStringArrayListExtra(
                 PlayerActivity.EXTRA_PLAYLIST,
                 ArrayList(playlist.map { it.uri.toString() })
@@ -401,7 +407,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openSettings() {
-        Toast.makeText(this, "Settings coming soon", Toast.LENGTH_SHORT).show()
+        val intent = Intent(this, SettingsActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onResume() {

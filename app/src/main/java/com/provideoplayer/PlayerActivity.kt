@@ -192,16 +192,30 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun loadPlaylist() {
         player?.let { exoPlayer ->
-            val mediaItems = playlist.map { uri ->
-                val builder = MediaItem.Builder().setUri(Uri.parse(uri))
-                
-                // Add subtitle configuration if needed
-                MediaItem.Builder()
-                    .setUri(Uri.parse(uri))
-                    .build()
+            if (playlist.isEmpty()) {
+                Toast.makeText(this, "No video to play", Toast.LENGTH_SHORT).show()
+                return@let
             }
             
-            exoPlayer.setMediaItems(mediaItems, currentIndex, 0)
+            val mediaItems = playlist.mapNotNull { uriString ->
+                try {
+                    val uri = Uri.parse(uriString)
+                    MediaItem.Builder()
+                        .setUri(uri)
+                        .build()
+                } catch (e: Exception) {
+                    null
+                }
+            }
+            
+            if (mediaItems.isEmpty()) {
+                Toast.makeText(this, "Failed to load video", Toast.LENGTH_SHORT).show()
+                return@let
+            }
+            
+            // Ensure currentIndex is valid
+            val validIndex = currentIndex.coerceIn(0, mediaItems.size - 1)
+            exoPlayer.setMediaItems(mediaItems, validIndex, 0)
         }
     }
 

@@ -75,6 +75,12 @@
             android:name=".NetworkStreamActivity"
             android:exported="false"
             android:theme="@style/Theme.ProVideoPlayer" />
+        
+        <!-- Settings Activity -->
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ProVideoPlayer" />
 
     </application>
 </manifest>
