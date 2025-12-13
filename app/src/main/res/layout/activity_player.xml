@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/playerContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/player_background"
+    android:keepScreenOn="true">
+
+    <!-- ExoPlayer View -->
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/playerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:use_controller="true"
+        app:controller_layout_id="@layout/exo_player_control_view"
+        app:show_buffering="when_playing"
+        app:surface_type="surface_view"
+        app:resize_mode="fit"
+        app:hide_on_touch="true"
+        app:show_timeout="3000" />
+
+    <!-- Gesture Overlay for Brightness/Volume -->
+    <View
+        android:id="@+id/gestureOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Brightness/Volume Indicator -->
+    <LinearLayout
+        android:id="@+id/gestureIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_gesture_indicator"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/ivGestureIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_brightness"
+            app:tint="@color/text_primary" />
+
+        <TextView
+            android:id="@+id/tvGestureValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/gestureProgress"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:indicatorColor="@color/primary"
+            app:trackColor="@color/seekbar_background"
+            app:trackCornerRadius="4dp"
+            app:trackThickness="6dp" />
+
+    </LinearLayout>
+
+    <!-- Seek Indicator (for double tap) -->
+    <LinearLayout
+        android:id="@+id/seekIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_gesture_indicator"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/ivSeekIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_forward"
+            app:tint="@color/text_primary" />
+
+        <TextView
+            android:id="@+id/tvSeekValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Lock Button (floating) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLock"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="start|center_vertical"
+        android:layout_marginStart="16dp"
+        app:icon="@drawable/ic_lock_open"
+        app:iconTint="@color/text_primary"
+        app:backgroundTint="@color/player_control_bg"
+        android:visibility="gone" />
+
+    <!-- Loading Spinner -->
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/loadingSpinner"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        app:indicatorColor="@color/primary"
+        android:visibility="gone" />
+
+</FrameLayout>

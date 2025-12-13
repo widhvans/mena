@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors - Deep Purple/Violet Theme -->
+    <color name="primary">#6C5CE7</color>
+    <color name="primary_dark">#5B4ED1</color>
+    <color name="primary_light">#A29BFE</color>
+    
+    <!-- Accent Colors -->
+    <color name="accent">#00CEC9</color>
+    <color name="accent_light">#81ECEC</color>
+    
+    <!-- Background Colors -->
+    <color name="background_dark">#0D0D0F</color>
+    <color name="background_card">#1A1A1F</color>
+    <color name="background_surface">#141417</color>
+    <color name="background_elevated">#232329</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B0B0B8</color>
+    <color name="text_tertiary">#6B6B75</color>
+    
+    <!-- Player Colors -->
+    <color name="player_background">#000000</color>
+    <color name="player_control_bg">#80000000</color>
+    <color name="seekbar_progress">#6C5CE7</color>
+    <color name="seekbar_buffered">#4D6C5CE7</color>
+    <color name="seekbar_background">#33FFFFFF</color>
+    
+    <!-- Status Colors -->
+    <color name="success">#00B894</color>
+    <color name="warning">#FDCB6E</color>
+    <color name="error">#FF6B6B</color>
+    
+    <!-- Overlay Colors -->
+    <color name="overlay_light">#1AFFFFFF</color>
+    <color name="overlay_dark">#80000000</color>
+    <color name="ripple_color">#336C5CE7</color>
+    
+    <!-- Gradient Colors -->
+    <color name="gradient_start">#6C5CE7</color>
+    <color name="gradient_end">#00CEC9</color>
+    
+    <!-- Transparent -->
+    <color name="transparent">#00000000</color>
+    <color name="semi_transparent_black">#B3000000</color>
+</resources>
