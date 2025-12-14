@@ -1,8 +1,6 @@
 package com.provideoplayer.model
 
 import android.net.Uri
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 
 /**
  * Data class representing a video file

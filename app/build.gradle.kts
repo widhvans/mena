@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -59,6 +60,9 @@ dependencies {
     
     // Material Design
     implementation("com.google.android.material:material:1.11.0")
+    
+    // SwipeRefreshLayout
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     
     // ExoPlayer (Media3) - Video playback engine
     implementation("androidx.media3:media3-exoplayer:1.2.0")
