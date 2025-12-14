@@ -38,6 +38,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.Tracks
 import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -203,10 +204,13 @@ class PlayerActivity : AppCompatActivity() {
         
         android.util.Log.d("PlayerActivity", ">>> initializePlayer START - playlist size: ${playlist.size}")
         
-        // Track selector - NO quality restrictions
+        // Track selector - NO quality restrictions, allow fallback for unsupported formats
         trackSelector = DefaultTrackSelector(this).apply {
             setParameters(buildUponParameters()
                 .setForceHighestSupportedBitrate(true) // Always use best quality
+                .setExceedAudioConstraintsIfNecessary(true) // Allow audio even if constraints not met
+                .setExceedVideoConstraintsIfNecessary(true) // Allow video even if constraints not met
+                .setExceedRendererCapabilitiesIfNecessary(true) // IMPORTANT: Allow unsupported formats to try playing
             )
         }
         
@@ -217,8 +221,14 @@ class PlayerActivity : AppCompatActivity() {
         val mediaSourceFactory = DefaultMediaSourceFactory(this)
             .setDataSourceFactory(dataSourceFactory)
         
+        // Create RenderersFactory with software decoder support
+        // EXTENSION_RENDERER_MODE_PREFER = Use software decoders when hardware not available
+        val renderersFactory = DefaultRenderersFactory(this)
+            .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)
+            .setEnableDecoderFallback(true) // Enable fallback to alternative decoders
+        
         // Build ExoPlayer and ASSIGN FIRST!
-        val exoPlayer = ExoPlayer.Builder(this)
+        val exoPlayer = ExoPlayer.Builder(this, renderersFactory)
             .setTrackSelector(trackSelector)
             .setMediaSourceFactory(mediaSourceFactory)
             .setAudioAttributes(

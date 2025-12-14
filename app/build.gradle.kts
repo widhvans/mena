@@ -72,6 +72,9 @@ dependencies {
     implementation("androidx.media3:media3-session:1.2.0")
     implementation("androidx.media3:media3-common:1.2.0")
     
+    // Media3 Decoder Extension - Software decoding for EAC3/AC3/DTS audio
+    implementation("androidx.media3:media3-decoder:1.2.0")
+    
     // Glide for image/thumbnail loading
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
