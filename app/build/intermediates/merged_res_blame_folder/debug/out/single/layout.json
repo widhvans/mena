@@ -1,0 +1,30 @@
+[
+    {
+        "merged": "com.provideoplayer.app-mergeDebugResources-44:/layout/activity_network_stream.xml",
+        "source": "com.provideoplayer.app-main-47:/layout/activity_network_stream.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-mergeDebugResources-44:/layout/activity_settings.xml",
+        "source": "com.provideoplayer.app-main-47:/layout/activity_settings.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-mergeDebugResources-44:/layout/item_video.xml",
+        "source": "com.provideoplayer.app-main-47:/layout/item_video.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-mergeDebugResources-44:/layout/item_folder.xml",
+        "source": "com.provideoplayer.app-main-47:/layout/item_folder.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-mergeDebugResources-44:/layout/activity_player.xml",
+        "source": "com.provideoplayer.app-main-47:/layout/activity_player.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-mergeDebugResources-44:/layout/dialog_settings.xml",
+        "source": "com.provideoplayer.app-main-47:/layout/dialog_settings.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-mergeDebugResources-44:/layout/activity_main.xml",
+        "source": "com.provideoplayer.app-main-47:/layout/activity_main.xml"
+    }
+]

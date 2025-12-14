@@ -1,0 +1,259 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.provideoplayer"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+9        android:targetSdkVersion="34" />
+10
+11    <!-- Storage Permissions -->
+12    <uses-permission
+12-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:6:5-7:38
+13        android:name="android.permission.READ_EXTERNAL_STORAGE"
+13-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:6:22-77
+14        android:maxSdkVersion="32" />
+14-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:7:9-35
+15    <uses-permission
+15-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:8:5-10:40
+16        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+16-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:8:22-78
+17        android:maxSdkVersion="29" />
+17-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:9:9-35
+18    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+18-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:11:5-75
+18-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:11:22-72
+19    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+19-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:12:5-75
+19-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:12:22-72
+20
+21    <!-- Network Streaming -->
+22    <uses-permission android:name="android.permission.INTERNET" />
+22-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:15:5-67
+22-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:15:22-64
+23    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+23-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:16:5-79
+23-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:16:22-76
+24
+25    <!-- Picture-in-Picture -->
+26    <uses-feature
+26-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:19:5-97
+27        android:name="android.software.picture_in_picture"
+27-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:19:19-69
+28        android:required="false" />
+28-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:19:70-94
+29
+30    <!-- Hardware Features -->
+31    <uses-feature
+31-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:22:5-90
+32        android:name="android.hardware.touchscreen"
+32-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:22:19-62
+33        android:required="false" />
+33-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:22:63-87
+34
+35    <permission
+35-->[androidx.core:core:1.12.0] C:\Users\as772\.gradle\caches\transforms-3\0689a9fd0de0e6fef5d369e599568f09\transformed\core-1.12.0\AndroidManifest.xml:22:5-24:47
+36        android:name="com.provideoplayer.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+36-->[androidx.core:core:1.12.0] C:\Users\as772\.gradle\caches\transforms-3\0689a9fd0de0e6fef5d369e599568f09\transformed\core-1.12.0\AndroidManifest.xml:23:9-81
+37        android:protectionLevel="signature" />
+37-->[androidx.core:core:1.12.0] C:\Users\as772\.gradle\caches\transforms-3\0689a9fd0de0e6fef5d369e599568f09\transformed\core-1.12.0\AndroidManifest.xml:24:9-44
+38
+39    <uses-permission android:name="com.provideoplayer.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+39-->[androidx.core:core:1.12.0] C:\Users\as772\.gradle\caches\transforms-3\0689a9fd0de0e6fef5d369e599568f09\transformed\core-1.12.0\AndroidManifest.xml:26:5-97
+39-->[androidx.core:core:1.12.0] C:\Users\as772\.gradle\caches\transforms-3\0689a9fd0de0e6fef5d369e599568f09\transformed\core-1.12.0\AndroidManifest.xml:26:22-94
+40
+41    <application
+41-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:24:5-85:19
+42        android:allowBackup="true"
+42-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:25:9-35
+43        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+43-->[androidx.core:core:1.12.0] C:\Users\as772\.gradle\caches\transforms-3\0689a9fd0de0e6fef5d369e599568f09\transformed\core-1.12.0\AndroidManifest.xml:28:18-86
+44        android:debuggable="true"
+45        android:extractNativeLibs="false"
+46        android:icon="@mipmap/ic_launcher"
+46-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:26:9-43
+47        android:label="@string/app_name"
+47-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:27:9-41
+48        android:networkSecurityConfig="@xml/network_security_config"
+48-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:33:9-69
+49        android:requestLegacyExternalStorage="true"
+49-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:32:9-52
+50        android:roundIcon="@mipmap/ic_launcher_round"
+50-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:28:9-54
+51        android:supportsRtl="true"
+51-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:29:9-35
+52        android:theme="@style/Theme.ProVideoPlayer"
+52-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:30:9-52
+53        android:usesCleartextTraffic="true" >
+53-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:31:9-44
+54
+55        <!-- Main Activity - Video Browser -->
+56        <activity
+56-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:37:9-51:20
+57            android:name="com.provideoplayer.MainActivity"
+57-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:38:13-41
+58            android:exported="true"
+58-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:39:13-36
+59            android:theme="@style/Theme.ProVideoPlayer" >
+59-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:40:13-56
+60            <intent-filter>
+60-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:41:13-44:29
+61                <action android:name="android.intent.action.MAIN" />
+61-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:42:17-69
+61-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:42:25-66
+62
+63                <category android:name="android.intent.category.LAUNCHER" />
+63-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:43:17-77
+63-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:43:27-74
+64            </intent-filter>
+65            <!-- Open video files from file managers -->
+66            <intent-filter>
+66-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:46:13-50:29
+67                <action android:name="android.intent.action.VIEW" />
+67-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:47:17-69
+67-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:47:25-66
+68
+69                <category android:name="android.intent.category.DEFAULT" />
+69-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:48:17-76
+69-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:48:27-73
+70
+71                <data android:mimeType="video/*" />
+71-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:49:17-52
+71-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:49:23-49
+72            </intent-filter>
+73        </activity>
+74
+75        <!-- Player Activity - Video Playback -->
+76        <activity
+76-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:54:9-71:20
+77            android:name="com.provideoplayer.PlayerActivity"
+77-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:55:13-43
+78            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+78-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:57:13-87
+79            android:exported="true"
+79-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:56:13-36
+80            android:launchMode="singleTop"
+80-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:59:13-43
+81            android:resizeableActivity="true"
+81-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:61:13-46
+82            android:supportsPictureInPicture="true"
+82-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:60:13-52
+83            android:theme="@style/Theme.ProVideoPlayer.Player" >
+83-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:58:13-63
+84            <intent-filter>
+84-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:62:13-70:29
+85                <action android:name="android.intent.action.VIEW" />
+85-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:47:17-69
+85-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:47:25-66
+86
+87                <category android:name="android.intent.category.DEFAULT" />
+87-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:48:17-76
+87-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:48:27-73
+88
+89                <data android:scheme="http" />
+89-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:49:17-52
+89-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:65:23-44
+90                <data android:scheme="https" />
+90-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:49:17-52
+90-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:65:23-44
+91                <data android:scheme="rtsp" />
+91-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:49:17-52
+91-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:65:23-44
+92                <data android:scheme="rtmp" />
+92-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:49:17-52
+92-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:65:23-44
+93                <data android:mimeType="video/*" />
+93-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:49:17-52
+93-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:49:23-49
+94            </intent-filter>
+95        </activity>
+96
+97        <!-- Network Stream Activity -->
+98        <activity
+98-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:74:9-77:59
+99            android:name="com.provideoplayer.NetworkStreamActivity"
+99-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:75:13-50
+100            android:exported="false"
+100-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:76:13-37
+101            android:theme="@style/Theme.ProVideoPlayer" />
+101-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:77:13-56
+102
+103        <!-- Settings Activity -->
+104        <activity
+104-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:80:9-83:59
+105            android:name="com.provideoplayer.SettingsActivity"
+105-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:81:13-45
+106            android:exported="false"
+106-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:82:13-37
+107            android:theme="@style/Theme.ProVideoPlayer" />
+107-->C:\Users\as772\akplayers\app\src\main\AndroidManifest.xml:83:13-56
+108
+109        <provider
+109-->[androidx.emoji2:emoji2:1.2.0] C:\Users\as772\.gradle\caches\transforms-3\c6681b4e418b9f33bb2163defe599d48\transformed\emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+110            android:name="androidx.startup.InitializationProvider"
+110-->[androidx.emoji2:emoji2:1.2.0] C:\Users\as772\.gradle\caches\transforms-3\c6681b4e418b9f33bb2163defe599d48\transformed\emoji2-1.2.0\AndroidManifest.xml:25:13-67
+111            android:authorities="com.provideoplayer.androidx-startup"
+111-->[androidx.emoji2:emoji2:1.2.0] C:\Users\as772\.gradle\caches\transforms-3\c6681b4e418b9f33bb2163defe599d48\transformed\emoji2-1.2.0\AndroidManifest.xml:26:13-68
+112            android:exported="false" >
+112-->[androidx.emoji2:emoji2:1.2.0] C:\Users\as772\.gradle\caches\transforms-3\c6681b4e418b9f33bb2163defe599d48\transformed\emoji2-1.2.0\AndroidManifest.xml:27:13-37
+113            <meta-data
+113-->[androidx.emoji2:emoji2:1.2.0] C:\Users\as772\.gradle\caches\transforms-3\c6681b4e418b9f33bb2163defe599d48\transformed\emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+114                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+114-->[androidx.emoji2:emoji2:1.2.0] C:\Users\as772\.gradle\caches\transforms-3\c6681b4e418b9f33bb2163defe599d48\transformed\emoji2-1.2.0\AndroidManifest.xml:30:17-75
+115                android:value="androidx.startup" />
+115-->[androidx.emoji2:emoji2:1.2.0] C:\Users\as772\.gradle\caches\transforms-3\c6681b4e418b9f33bb2163defe599d48\transformed\emoji2-1.2.0\AndroidManifest.xml:31:17-49
+116            <meta-data
+116-->[androidx.lifecycle:lifecycle-process:2.7.0] C:\Users\as772\.gradle\caches\transforms-3\285f085280118d755ce82ea703c4f012\transformed\lifecycle-process-2.7.0\AndroidManifest.xml:29:13-31:52
+117                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+117-->[androidx.lifecycle:lifecycle-process:2.7.0] C:\Users\as772\.gradle\caches\transforms-3\285f085280118d755ce82ea703c4f012\transformed\lifecycle-process-2.7.0\AndroidManifest.xml:30:17-78
+118                android:value="androidx.startup" />
+118-->[androidx.lifecycle:lifecycle-process:2.7.0] C:\Users\as772\.gradle\caches\transforms-3\285f085280118d755ce82ea703c4f012\transformed\lifecycle-process-2.7.0\AndroidManifest.xml:31:17-49
+119            <meta-data
+119-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
+120                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+120-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
+121                android:value="androidx.startup" />
+121-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
+122        </provider>
+123
+124        <receiver
+124-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:34:9-52:20
+125            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+125-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:35:13-76
+126            android:directBootAware="false"
+126-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:36:13-44
+127            android:enabled="true"
+127-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:37:13-35
+128            android:exported="true"
+128-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:38:13-36
+129            android:permission="android.permission.DUMP" >
+129-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:39:13-57
+130            <intent-filter>
+130-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:40:13-42:29
+131                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+131-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:17-91
+131-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:25-88
+132            </intent-filter>
+133            <intent-filter>
+133-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:43:13-45:29
+134                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+134-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:17-85
+134-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:25-82
+135            </intent-filter>
+136            <intent-filter>
+136-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:46:13-48:29
+137                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+137-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:17-88
+137-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:25-85
+138            </intent-filter>
+139            <intent-filter>
+139-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:49:13-51:29
+140                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+140-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:17-95
+140-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\as772\.gradle\caches\transforms-3\26c8e84237c8e4fce06f7538f18656ef\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:25-92
+141            </intent-filter>
+142        </receiver>
+143    </application>
+144
+145</manifest>

@@ -1,0 +1,190 @@
+[
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/layout_item_video.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/layout/item_video.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/layout_activity_player.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/layout/activity_player.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_lock.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_lock.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_filter.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_filter.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_bg_gradient_top.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/bg_gradient_top.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_audio_track.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_audio_track.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_lock_open.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_lock_open.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/xml_network_security_config.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/xml/network_security_config.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_paste.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_paste.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_view_grid.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_view_grid.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_folder.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_folder.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_pause.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_pause.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/layout_item_folder.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/layout/item_folder.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_play.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_play.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_forward.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_forward.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/layout_activity_settings.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/layout/activity_settings.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_rotate.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_rotate.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_bg_play_button.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/bg_play_button.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_pip.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_pip.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_clear.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_clear.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_bg_resolution_badge.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/bg_resolution_badge.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_network.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_network.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/layout_activity_network_stream.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/layout/activity_network_stream.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_speed.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_speed.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_subtitle.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_subtitle.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_bg_gesture_indicator.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/bg_gesture_indicator.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_back.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_back.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/menu_menu_main.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/menu/menu_main.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_bg_gradient_bottom.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/bg_gradient_bottom.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_settings.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_settings.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_bg_handle.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/bg_handle.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_volume.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_volume.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/layout_dialog_settings.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/layout/dialog_settings.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_previous.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_previous.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_aspect_ratio.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_aspect_ratio.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_next.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_next.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_video_placeholder.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_video_placeholder.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_bg_duration_badge.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/bg_duration_badge.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_rewind.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_rewind.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_arrow_right.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_arrow_right.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_bg_control_button.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/bg_control_button.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_sort.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_sort.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/layout_activity_main.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_search.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_search.xml"
+    },
+    {
+        "merged": "com.provideoplayer.app-merged_res-45:/drawable_ic_brightness.xml.flat",
+        "source": "com.provideoplayer.app-main-47:/drawable/ic_brightness.xml"
+    }
+]
