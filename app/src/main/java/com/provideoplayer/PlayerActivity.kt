@@ -36,7 +36,9 @@ import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.Tracks
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.ui.PlayerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -203,8 +205,16 @@ class PlayerActivity : AppCompatActivity() {
             )
         }
         
-        // Build ExoPlayer
+        // Create DataSource.Factory for handling content:// URIs and network streams
+        val dataSourceFactory = DefaultDataSource.Factory(this)
+        
+        // Create MediaSourceFactory with the DataSource.Factory
+        val mediaSourceFactory = DefaultMediaSourceFactory(this)
+            .setDataSourceFactory(dataSourceFactory)
+        
+        // Build ExoPlayer with MediaSourceFactory for proper URI handling
         player = ExoPlayer.Builder(this)
+            .setMediaSourceFactory(mediaSourceFactory)
             .setTrackSelector(trackSelector)
             .setAudioAttributes(
                 AudioAttributes.Builder()
