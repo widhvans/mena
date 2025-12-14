@@ -35,7 +35,6 @@ android {
     }
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -50,9 +49,6 @@ android {
 }
 
 dependencies {
-    // Core Library Desugaring for Java 8+ APIs on older Android
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
-    
     // AndroidX Core
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -69,23 +65,12 @@ dependencies {
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     
     // ExoPlayer (Media3) - Video playback engine
-    implementation("androidx.media3:media3-exoplayer:1.3.1")
-    implementation("androidx.media3:media3-exoplayer-dash:1.3.1")
-    implementation("androidx.media3:media3-exoplayer-hls:1.3.1")
-    implementation("androidx.media3:media3-ui:1.3.1")
-    implementation("androidx.media3:media3-session:1.3.1")
-    implementation("androidx.media3:media3-common:1.3.1")
-    
-    // Media3 Decoder Extension - Software decoding for EAC3/AC3/DTS audio
-    implementation("androidx.media3:media3-decoder:1.3.1")
-    
-    // Jellyfin FFmpeg Audio Decoder - Pre-built native libraries with EAC3/AC3/DTS support
-    // Available on Maven Central, compatible with Media3
-    implementation("org.jellyfin.media3:media3-ffmpeg-decoder:1.3.1+2")
-    
-    // OkHttp Data Source for better HTTP streaming support with cookies
-    implementation("androidx.media3:media3-datasource-okhttp:1.3.1")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("androidx.media3:media3-exoplayer:1.2.0")
+    implementation("androidx.media3:media3-exoplayer-dash:1.2.0")
+    implementation("androidx.media3:media3-exoplayer-hls:1.2.0")
+    implementation("androidx.media3:media3-ui:1.2.0")
+    implementation("androidx.media3:media3-session:1.2.0")
+    implementation("androidx.media3:media3-common:1.2.0")
     
     // Glide for image/thumbnail loading
     implementation("com.github.bumptech.glide:glide:4.16.0")

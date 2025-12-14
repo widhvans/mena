@@ -38,16 +38,9 @@ import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.Tracks
 import androidx.media3.datasource.DefaultDataSource
-import androidx.media3.datasource.okhttp.OkHttpDataSource
-import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
-import okhttp3.OkHttpClient
-import okhttp3.Cookie
-import okhttp3.CookieJar
-import okhttp3.HttpUrl
-import java.util.concurrent.TimeUnit
 import androidx.media3.ui.PlayerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -210,91 +203,22 @@ class PlayerActivity : AppCompatActivity() {
         
         android.util.Log.d("PlayerActivity", ">>> initializePlayer START - playlist size: ${playlist.size}")
         
-        // Track selector - NO quality restrictions, allow fallback for unsupported formats
+        // Track selector - NO quality restrictions
         trackSelector = DefaultTrackSelector(this).apply {
             setParameters(buildUponParameters()
                 .setForceHighestSupportedBitrate(true) // Always use best quality
-                .setExceedAudioConstraintsIfNecessary(true) // Allow audio even if constraints not met
-                .setExceedVideoConstraintsIfNecessary(true) // Allow video even if constraints not met
-                .setExceedRendererCapabilitiesIfNecessary(true) // IMPORTANT: Allow unsupported formats to try playing
             )
         }
         
-        // Create OkHttp client with cookie jar for better streaming server compatibility
-        val cookieJar = object : CookieJar {
-            private val cookieStore = mutableMapOf<String, MutableList<Cookie>>()
-            
-            override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-                cookieStore[url.host] = cookies.toMutableList()
-            }
-            
-            override fun loadForRequest(url: HttpUrl): List<Cookie> {
-                return cookieStore[url.host] ?: emptyList()
-            }
-        }
-        
-        val okHttpClient = OkHttpClient.Builder()
-            .cookieJar(cookieJar)
-            .connectTimeout(60, TimeUnit.SECONDS)
-            .readTimeout(60, TimeUnit.SECONDS)
-            .followRedirects(true)
-            .followSslRedirects(true)
-            // Network interceptor to handle HTML responses from streaming servers
-            .addNetworkInterceptor { chain ->
-                val request = chain.request()
-                val response = chain.proceed(request)
-                
-                // If server returns HTML instead of video, it might need specific headers
-                val contentType = response.header("Content-Type") ?: ""
-                if (contentType.contains("text/html")) {
-                    // Log for debugging
-                    android.util.Log.w("PlayerActivity", "Server returned HTML for: ${request.url}")
-                }
-                response
-            }
-            .addInterceptor { chain ->
-                val original = chain.request()
-                val url = original.url.toString()
-                
-                // Extract host for Referer header
-                val host = original.url.host
-                val referer = "http://$host/"
-                
-                val requestBuilder = original.newBuilder()
-                    .header("User-Agent", "Mozilla/5.0 (Linux; Android 13; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36")
-                    .header("Accept", "video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5")
-                    .header("Accept-Language", "en-US,en;q=0.9")
-                    .header("Accept-Encoding", "identity")
-                    .header("Referer", referer)
-                    .header("Origin", "http://$host")
-                    .header("Sec-Fetch-Dest", "video")
-                    .header("Sec-Fetch-Mode", "cors")
-                    .header("Sec-Fetch-Site", "same-origin")
-                    .header("Connection", "keep-alive")
-                    .header("Range", "bytes=0-")
-                    .method(original.method, original.body)
-                chain.proceed(requestBuilder.build())
-            }
-            .build()
-        
-        // Create OkHttp data source factory
-        val httpDataSourceFactory = OkHttpDataSource.Factory(okHttpClient)
-        
-        // Create data source factory that uses OkHttp for network and default for local
-        val dataSourceFactory = DefaultDataSource.Factory(this, httpDataSourceFactory)
+        // Create data source factory for proper content:// URI resolution
+        val dataSourceFactory = DefaultDataSource.Factory(this)
         
         // Create media source factory with HLS/DASH support
         val mediaSourceFactory = DefaultMediaSourceFactory(this)
             .setDataSourceFactory(dataSourceFactory)
         
-        // Create RenderersFactory with software decoder support
-        // EXTENSION_RENDERER_MODE_PREFER = Use software decoders when hardware not available
-        val renderersFactory = DefaultRenderersFactory(this)
-            .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)
-            .setEnableDecoderFallback(true) // Enable fallback to alternative decoders
-        
         // Build ExoPlayer and ASSIGN FIRST!
-        val exoPlayer = ExoPlayer.Builder(this, renderersFactory)
+        val exoPlayer = ExoPlayer.Builder(this)
             .setTrackSelector(trackSelector)
             .setMediaSourceFactory(mediaSourceFactory)
             .setAudioAttributes(
@@ -592,10 +516,10 @@ class PlayerActivity : AppCompatActivity() {
                 
                 when (gestureType) {
                     GestureType.BRIGHTNESS -> {
-                        adjustBrightness(deltaY / screenHeight)
+                        adjustBrightness(deltaY / screenHeight * 0.3f) // Reduced sensitivity
                     }
                     GestureType.VOLUME -> {
-                        adjustVolume(deltaY / screenHeight)
+                        adjustVolume(deltaY / screenHeight * 0.3f) // Reduced sensitivity
                     }
                     GestureType.SEEK -> {
                         // Horizontal seek handled separately
@@ -984,16 +908,34 @@ class PlayerActivity : AppCompatActivity() {
             .setTitle("Subtitles")
             .setItems(names) { dialog, which ->
                 if (which == 0) {
-                    // Disable subtitles
+                    // Disable subtitles - clear all text track overrides and disable renderer
                     trackSelector.setParameters(
                         trackSelector.buildUponParameters()
                             .setRendererDisabled(C.TRACK_TYPE_TEXT, true)
+                            .clearOverridesOfType(C.TRACK_TYPE_TEXT)
                     )
+                    Toast.makeText(this, "Subtitles Off", Toast.LENGTH_SHORT).show()
                 } else {
-                    trackSelector.setParameters(
-                        trackSelector.buildUponParameters()
-                            .setRendererDisabled(C.TRACK_TYPE_TEXT, false)
-                    )
+                    // Enable specific subtitle track
+                    val tracks = player?.currentTracks ?: return@setItems
+                    var groupIndex = 0
+                    for (group in tracks.groups) {
+                        if (group.type == C.TRACK_TYPE_TEXT) {
+                            for (i in 0 until group.length) {
+                                if (groupIndex == which - 1) {
+                                    trackSelector.setParameters(
+                                        trackSelector.buildUponParameters()
+                                            .setRendererDisabled(C.TRACK_TYPE_TEXT, false)
+                                            .setOverrideForType(
+                                                TrackSelectionOverride(group.mediaTrackGroup, i)
+                                            )
+                                    )
+                                    return@setItems
+                                }
+                                groupIndex++
+                            }
+                        }
+                    }
                 }
                 dialog.dismiss()
             }
@@ -1053,11 +995,101 @@ class PlayerActivity : AppCompatActivity() {
             .setTitle("Video Filter")
             .setSingleChoiceItems(names, currentIndex) { dialog, which ->
                 currentFilter = filters[which]
+                applyVideoFilter(currentFilter)
                 Toast.makeText(this, "Filter: ${currentFilter.displayName}", Toast.LENGTH_SHORT).show()
-                // Note: Actual filter implementation requires custom shader/surface
                 dialog.dismiss()
             }
             .show()
+    }
+    
+    private fun applyVideoFilter(filter: VideoFilter) {
+        val colorMatrix = when (filter) {
+            VideoFilter.NONE -> null
+            VideoFilter.GRAYSCALE -> android.graphics.ColorMatrix().apply {
+                setSaturation(0f)
+            }
+            VideoFilter.SEPIA -> android.graphics.ColorMatrix(floatArrayOf(
+                0.393f, 0.769f, 0.189f, 0f, 0f,
+                0.349f, 0.686f, 0.168f, 0f, 0f,
+                0.272f, 0.534f, 0.131f, 0f, 0f,
+                0f, 0f, 0f, 1f, 0f
+            ))
+            VideoFilter.NEGATIVE -> android.graphics.ColorMatrix(floatArrayOf(
+                -1f, 0f, 0f, 0f, 255f,
+                0f, -1f, 0f, 0f, 255f,
+                0f, 0f, -1f, 0f, 255f,
+                0f, 0f, 0f, 1f, 0f
+            ))
+            VideoFilter.BRIGHTNESS -> android.graphics.ColorMatrix(floatArrayOf(
+                1.2f, 0f, 0f, 0f, 30f,
+                0f, 1.2f, 0f, 0f, 30f,
+                0f, 0f, 1.2f, 0f, 30f,
+                0f, 0f, 0f, 1f, 0f
+            ))
+            VideoFilter.CONTRAST -> android.graphics.ColorMatrix(floatArrayOf(
+                1.5f, 0f, 0f, 0f, -60f,
+                0f, 1.5f, 0f, 0f, -60f,
+                0f, 0f, 1.5f, 0f, -60f,
+                0f, 0f, 0f, 1f, 0f
+            ))
+            VideoFilter.SATURATION -> android.graphics.ColorMatrix().apply {
+                setSaturation(1.5f)
+            }
+            VideoFilter.SHARPEN -> android.graphics.ColorMatrix().apply {
+                // Sharpen approximation using contrast
+                set(floatArrayOf(
+                    1.3f, 0f, 0f, 0f, -30f,
+                    0f, 1.3f, 0f, 0f, -30f,
+                    0f, 0f, 1.3f, 0f, -30f,
+                    0f, 0f, 0f, 1f, 0f
+                ))
+            }
+            VideoFilter.VIGNETTE -> android.graphics.ColorMatrix(floatArrayOf(
+                0.9f, 0f, 0f, 0f, -20f,
+                0f, 0.9f, 0f, 0f, -20f,
+                0f, 0f, 0.9f, 0f, -20f,
+                0f, 0f, 0f, 1f, 0f
+            ))
+            VideoFilter.WARM -> android.graphics.ColorMatrix(floatArrayOf(
+                1.2f, 0f, 0f, 0f, 10f,
+                0f, 1.0f, 0f, 0f, 0f,
+                0f, 0f, 0.8f, 0f, -10f,
+                0f, 0f, 0f, 1f, 0f
+            ))
+            VideoFilter.COOL -> android.graphics.ColorMatrix(floatArrayOf(
+                0.8f, 0f, 0f, 0f, -10f,
+                0f, 1.0f, 0f, 0f, 0f,
+                0f, 0f, 1.2f, 0f, 10f,
+                0f, 0f, 0f, 1f, 0f
+            ))
+        }
+        
+        if (colorMatrix != null) {
+            // Apply filter to the video surface (TextureView)
+            val videoSurfaceView = binding.playerView.videoSurfaceView
+            if (videoSurfaceView is android.view.TextureView) {
+                videoSurfaceView.alpha = 1f // Ensure visibility
+                // TextureView doesn't support color filter directly, use overlay approach
+                binding.playerView.foreground = android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT)
+            }
+            // Apply to entire PlayerView as fallback
+            binding.playerView.foreground = null
+            binding.playerView.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            
+            // For TextureView, we need a different approach - use paint with color filter
+            val videoView = binding.playerView.videoSurfaceView
+            if (videoView != null && videoView is android.view.TextureView) {
+                val paint = android.graphics.Paint()
+                paint.colorFilter = android.graphics.ColorMatrixColorFilter(colorMatrix)
+                videoView.setLayerType(View.LAYER_TYPE_HARDWARE, paint)
+            }
+        } else {
+            // Remove filter
+            val videoView = binding.playerView.videoSurfaceView
+            if (videoView != null && videoView is android.view.TextureView) {
+                videoView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+            }
+        }
     }
 
     private fun toggleOrientation() {
