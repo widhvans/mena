@@ -38,6 +38,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.Tracks
 import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
@@ -214,8 +215,15 @@ class PlayerActivity : AppCompatActivity() {
             )
         }
         
-        // Create data source factory for proper content:// URI resolution
-        val dataSourceFactory = DefaultDataSource.Factory(this)
+        // Create HTTP data source factory with custom User-Agent for streaming servers
+        val httpDataSourceFactory = DefaultHttpDataSource.Factory()
+            .setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+            .setConnectTimeoutMs(30000)
+            .setReadTimeoutMs(30000)
+            .setAllowCrossProtocolRedirects(true)
+        
+        // Create data source factory that uses HTTP factory for network and default for local
+        val dataSourceFactory = DefaultDataSource.Factory(this, httpDataSourceFactory)
         
         // Create media source factory with HLS/DASH support
         val mediaSourceFactory = DefaultMediaSourceFactory(this)
