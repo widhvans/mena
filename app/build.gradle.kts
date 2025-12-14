@@ -83,6 +83,10 @@ dependencies {
     // Available on Maven Central, compatible with Media3
     implementation("org.jellyfin.media3:media3-ffmpeg-decoder:1.3.1+2")
     
+    // OkHttp Data Source for better HTTP streaming support with cookies
+    implementation("androidx.media3:media3-datasource-okhttp:1.3.1")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    
     // Glide for image/thumbnail loading
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")

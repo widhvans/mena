@@ -38,11 +38,16 @@ import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.Tracks
 import androidx.media3.datasource.DefaultDataSource
-import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import okhttp3.OkHttpClient
+import okhttp3.Cookie
+import okhttp3.CookieJar
+import okhttp3.HttpUrl
+import java.util.concurrent.TimeUnit
 import androidx.media3.ui.PlayerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -215,26 +220,45 @@ class PlayerActivity : AppCompatActivity() {
             )
         }
         
-        // Create HTTP data source factory with full browser headers for streaming servers
-        // Some servers return HTML instead of video if headers don't look like a real browser
-        val defaultHeaders = mapOf(
-            "Accept" to "*/*",
-            "Accept-Language" to "en-US,en;q=0.9",
-            "Accept-Encoding" to "identity;q=1, *;q=0",
-            "Sec-Fetch-Dest" to "video",
-            "Sec-Fetch-Mode" to "no-cors",
-            "Sec-Fetch-Site" to "cross-site",
-            "Range" to "bytes=0-"
-        )
+        // Create OkHttp client with cookie jar for better streaming server compatibility
+        val cookieJar = object : CookieJar {
+            private val cookieStore = mutableMapOf<String, MutableList<Cookie>>()
+            
+            override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+                cookieStore[url.host] = cookies.toMutableList()
+            }
+            
+            override fun loadForRequest(url: HttpUrl): List<Cookie> {
+                return cookieStore[url.host] ?: emptyList()
+            }
+        }
         
-        val httpDataSourceFactory = DefaultHttpDataSource.Factory()
-            .setUserAgent("Mozilla/5.0 (Linux; Android 13; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36")
-            .setDefaultRequestProperties(defaultHeaders)
-            .setConnectTimeoutMs(30000)
-            .setReadTimeoutMs(30000)
-            .setAllowCrossProtocolRedirects(true)
+        val okHttpClient = OkHttpClient.Builder()
+            .cookieJar(cookieJar)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .followRedirects(true)
+            .followSslRedirects(true)
+            .addInterceptor { chain ->
+                val original = chain.request()
+                val requestBuilder = original.newBuilder()
+                    .header("User-Agent", "Mozilla/5.0 (Linux; Android 13; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36")
+                    .header("Accept", "*/*")
+                    .header("Accept-Language", "en-US,en;q=0.9")
+                    .header("Accept-Encoding", "identity;q=1, *;q=0")
+                    .header("Sec-Fetch-Dest", "video")
+                    .header("Sec-Fetch-Mode", "no-cors")
+                    .header("Sec-Fetch-Site", "cross-site")
+                    .header("Connection", "keep-alive")
+                    .method(original.method, original.body)
+                chain.proceed(requestBuilder.build())
+            }
+            .build()
         
-        // Create data source factory that uses HTTP factory for network and default for local
+        // Create OkHttp data source factory
+        val httpDataSourceFactory = OkHttpDataSource.Factory(okHttpClient)
+        
+        // Create data source factory that uses OkHttp for network and default for local
         val dataSourceFactory = DefaultDataSource.Factory(this, httpDataSourceFactory)
         
         // Create media source factory with HLS/DASH support
