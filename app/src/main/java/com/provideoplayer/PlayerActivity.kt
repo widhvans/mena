@@ -203,10 +203,14 @@ class PlayerActivity : AppCompatActivity() {
         
         android.util.Log.d("PlayerActivity", ">>> initializePlayer START - playlist size: ${playlist.size}")
         
-        // Track selector - NO quality restrictions
+        // Track selector - Maximum quality settings
         trackSelector = DefaultTrackSelector(this).apply {
             setParameters(buildUponParameters()
                 .setForceHighestSupportedBitrate(true) // Always use best quality
+                .setMaxVideoSize(Int.MAX_VALUE, Int.MAX_VALUE) // No resolution limit
+                .setMaxVideoBitrate(Int.MAX_VALUE) // No bitrate limit
+                .setExceedVideoConstraintsIfNecessary(true) // Allow exceeding constraints
+                .setExceedRendererCapabilitiesIfNecessary(true) // Push hardware limits
             )
         }
         
@@ -514,12 +518,16 @@ class PlayerActivity : AppCompatActivity() {
                     }
                 }
                 
+                // Use distanceY for incremental changes (positive = swipe up = increase)
+                // distanceY is positive when swiping up, so we use it directly
+                val adjustDelta = distanceY / screenHeight * 0.5f
+                
                 when (gestureType) {
                     GestureType.BRIGHTNESS -> {
-                        adjustBrightness(deltaY / screenHeight * 0.3f) // Reduced sensitivity
+                        adjustBrightness(adjustDelta)
                     }
                     GestureType.VOLUME -> {
-                        adjustVolume(deltaY / screenHeight * 0.3f) // Reduced sensitivity
+                        adjustVolume(adjustDelta)
                     }
                     GestureType.SEEK -> {
                         // Horizontal seek handled separately
@@ -908,11 +916,12 @@ class PlayerActivity : AppCompatActivity() {
             .setTitle("Subtitles")
             .setItems(names) { dialog, which ->
                 if (which == 0) {
-                    // Disable subtitles - clear all text track overrides and disable renderer
+                    // Disable subtitles completely - disable renderer, clear overrides, and ignore selection flags
                     trackSelector.setParameters(
                         trackSelector.buildUponParameters()
                             .setRendererDisabled(C.TRACK_TYPE_TEXT, true)
                             .clearOverridesOfType(C.TRACK_TYPE_TEXT)
+                            .setIgnoredTextSelectionFlags(C.SELECTION_FLAG_DEFAULT or C.SELECTION_FLAG_AUTOSELECT or C.SELECTION_FLAG_FORCED)
                     )
                     Toast.makeText(this, "Subtitles Off", Toast.LENGTH_SHORT).show()
                 } else {
