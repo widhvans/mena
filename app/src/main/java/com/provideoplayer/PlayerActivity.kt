@@ -1,6 +1,8 @@
 package com.provideoplayer
 
 import android.app.PictureInPictureParams
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -332,6 +334,33 @@ class PlayerActivity : AppCompatActivity() {
             else -> MimeTypes.VIDEO_UNKNOWN
         }
     }
+    
+    /**
+     * Show detailed error dialog with copy button for debugging
+     */
+    private fun showErrorDialog(errorDetails: String) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("❌ Video Playback Error")
+            .setMessage(errorDetails)
+            .setPositiveButton("📋 Copy Error") { dialog, _ ->
+                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("Video Player Error", errorDetails)
+                clipboard.setPrimaryClip(clip)
+                Toast.makeText(this, "Error copied to clipboard!", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Close") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setNeutralButton("Retry") { dialog, _ ->
+                dialog.dismiss()
+                // Retry playback
+                player?.prepare()
+                player?.playWhenReady = true
+            }
+            .setCancelable(false)
+            .show()
+    }
 
     private val playerListener = object : Player.Listener {
         override fun onPlaybackStateChanged(state: Int) {
@@ -381,12 +410,34 @@ class PlayerActivity : AppCompatActivity() {
         
         override fun onPlayerError(error: PlaybackException) {
             android.util.Log.e("PlayerActivity", "Player error: ${error.errorCodeName} - ${error.message}", error)
-            Toast.makeText(
-                this@PlayerActivity,
-                "Playback error: ${error.message}",
-                Toast.LENGTH_LONG
-            ).show()
             binding.progressBar.visibility = View.GONE
+            
+            // Create detailed error info
+            val currentUri = playlist.getOrNull(currentIndex) ?: "Unknown"
+            val mimeType = if (currentUri != "Unknown") getMimeType(currentUri) else "Unknown"
+            
+            val errorDetails = buildString {
+                appendLine("=== VIDEO PLAYER ERROR ===")
+                appendLine()
+                appendLine("Error Code: ${error.errorCodeName}")
+                appendLine("Error Message: ${error.message}")
+                appendLine()
+                appendLine("=== VIDEO INFO ===")
+                appendLine("URI: $currentUri")
+                appendLine("MIME Type: $mimeType")
+                appendLine("Playlist Index: $currentIndex / ${playlist.size}")
+                appendLine()
+                appendLine("=== PLAYER STATE ===")
+                appendLine("Is Playing: ${player?.isPlaying}")
+                appendLine("Playback State: ${player?.playbackState}")
+                appendLine("Duration: ${player?.duration}")
+                appendLine()
+                appendLine("=== STACK TRACE ===")
+                appendLine(error.stackTraceToString())
+            }
+            
+            // Show error dialog with copy button
+            showErrorDialog(errorDetails)
         }
         
         override fun onTracksChanged(tracks: Tracks) {
