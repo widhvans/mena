@@ -200,6 +200,8 @@ class PlayerActivity : AppCompatActivity() {
             return
         }
         
+        android.util.Log.d("PlayerActivity", ">>> initializePlayer START - playlist size: ${playlist.size}")
+        
         // Track selector - NO quality restrictions
         trackSelector = DefaultTrackSelector(this).apply {
             setParameters(buildUponParameters()
@@ -214,8 +216,8 @@ class PlayerActivity : AppCompatActivity() {
         val mediaSourceFactory = DefaultMediaSourceFactory(this)
             .setDataSourceFactory(dataSourceFactory)
         
-        // Build ExoPlayer
-        player = ExoPlayer.Builder(this)
+        // Build ExoPlayer and ASSIGN FIRST!
+        val exoPlayer = ExoPlayer.Builder(this)
             .setTrackSelector(trackSelector)
             .setMediaSourceFactory(mediaSourceFactory)
             .setAudioAttributes(
@@ -227,20 +229,27 @@ class PlayerActivity : AppCompatActivity() {
             )
             .setHandleAudioBecomingNoisy(true)
             .build()
-            .also { exoPlayer ->
-                binding.playerView.player = exoPlayer
-                binding.playerView.useController = false // Use custom controls
-                
-                // Add listener
-                exoPlayer.addListener(playerListener)
-                
-                // Load playlist
-                loadPlaylist()
-                
-                // Start playback
-                exoPlayer.prepare()
-                exoPlayer.playWhenReady = true
-            }
+        
+        // ASSIGN player variable BEFORE calling loadPlaylist!
+        player = exoPlayer
+        android.util.Log.d("PlayerActivity", ">>> Player assigned, player is now: $player")
+        
+        // Attach to view
+        binding.playerView.player = exoPlayer
+        binding.playerView.useController = false // Use custom controls
+        
+        // Add listener
+        exoPlayer.addListener(playerListener)
+        
+        // NOW load playlist (player is no longer null!)
+        loadPlaylist()
+        
+        // Start playback
+        android.util.Log.d("PlayerActivity", ">>> Calling prepare() and setting playWhenReady=true")
+        exoPlayer.prepare()
+        exoPlayer.playWhenReady = true
+        
+        android.util.Log.d("PlayerActivity", ">>> initializePlayer END - playWhenReady: ${exoPlayer.playWhenReady}")
     }
 
     private fun loadPlaylist() {
