@@ -75,6 +75,10 @@ dependencies {
     // Media3 Decoder Extension - Software decoding for EAC3/AC3/DTS audio
     implementation("androidx.media3:media3-decoder:1.2.0")
     
+    // Jellyfin FFmpeg Audio Decoder - Pre-built native libraries with EAC3/AC3/DTS support
+    // Available on Maven Central, compatible with Media3
+    implementation("org.jellyfin.media3:media3-ffmpeg-decoder:1.2.0+2")
+    
     // Glide for image/thumbnail loading
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
