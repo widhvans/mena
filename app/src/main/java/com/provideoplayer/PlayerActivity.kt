@@ -215,9 +215,21 @@ class PlayerActivity : AppCompatActivity() {
             )
         }
         
-        // Create HTTP data source factory with custom User-Agent for streaming servers
+        // Create HTTP data source factory with full browser headers for streaming servers
+        // Some servers return HTML instead of video if headers don't look like a real browser
+        val defaultHeaders = mapOf(
+            "Accept" to "*/*",
+            "Accept-Language" to "en-US,en;q=0.9",
+            "Accept-Encoding" to "identity;q=1, *;q=0",
+            "Sec-Fetch-Dest" to "video",
+            "Sec-Fetch-Mode" to "no-cors",
+            "Sec-Fetch-Site" to "cross-site",
+            "Range" to "bytes=0-"
+        )
+        
         val httpDataSourceFactory = DefaultHttpDataSource.Factory()
-            .setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+            .setUserAgent("Mozilla/5.0 (Linux; Android 13; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36")
+            .setDefaultRequestProperties(defaultHeaders)
             .setConnectTimeoutMs(30000)
             .setReadTimeoutMs(30000)
             .setAllowCrossProtocolRedirects(true)
