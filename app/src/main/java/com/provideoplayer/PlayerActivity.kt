@@ -235,21 +235,43 @@ class PlayerActivity : AppCompatActivity() {
         
         val okHttpClient = OkHttpClient.Builder()
             .cookieJar(cookieJar)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
             .followRedirects(true)
             .followSslRedirects(true)
+            // Network interceptor to handle HTML responses from streaming servers
+            .addNetworkInterceptor { chain ->
+                val request = chain.request()
+                val response = chain.proceed(request)
+                
+                // If server returns HTML instead of video, it might need specific headers
+                val contentType = response.header("Content-Type") ?: ""
+                if (contentType.contains("text/html")) {
+                    // Log for debugging
+                    android.util.Log.w("PlayerActivity", "Server returned HTML for: ${request.url}")
+                }
+                response
+            }
             .addInterceptor { chain ->
                 val original = chain.request()
+                val url = original.url.toString()
+                
+                // Extract host for Referer header
+                val host = original.url.host
+                val referer = "http://$host/"
+                
                 val requestBuilder = original.newBuilder()
                     .header("User-Agent", "Mozilla/5.0 (Linux; Android 13; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36")
-                    .header("Accept", "*/*")
+                    .header("Accept", "video/webm,video/ogg,video/*;q=0.9,application/ogg;q=0.7,audio/*;q=0.6,*/*;q=0.5")
                     .header("Accept-Language", "en-US,en;q=0.9")
-                    .header("Accept-Encoding", "identity;q=1, *;q=0")
+                    .header("Accept-Encoding", "identity")
+                    .header("Referer", referer)
+                    .header("Origin", "http://$host")
                     .header("Sec-Fetch-Dest", "video")
-                    .header("Sec-Fetch-Mode", "no-cors")
-                    .header("Sec-Fetch-Site", "cross-site")
+                    .header("Sec-Fetch-Mode", "cors")
+                    .header("Sec-Fetch-Site", "same-origin")
                     .header("Connection", "keep-alive")
+                    .header("Range", "bytes=0-")
                     .method(original.method, original.body)
                 chain.proceed(requestBuilder.build())
             }
