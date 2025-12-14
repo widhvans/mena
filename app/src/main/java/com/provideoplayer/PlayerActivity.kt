@@ -241,10 +241,20 @@ class PlayerActivity : AppCompatActivity() {
             val mediaItems = playlist.mapNotNull { uriString ->
                 try {
                     val uri = Uri.parse(uriString)
-                    MediaItem.Builder()
-                        .setUri(uri)
-                        .build()
+                    val mimeType = inferMimeType(uriString)
+                    
+                    android.util.Log.d("PlayerActivity", "Building MediaItem - URI: $uriString, MIME: $mimeType")
+                    
+                    val builder = MediaItem.Builder().setUri(uri)
+                    
+                    // Set MIME type if detected (helps ExoPlayer correctly identify stream type)
+                    if (mimeType != null) {
+                        builder.setMimeType(mimeType)
+                    }
+                    
+                    builder.build()
                 } catch (e: Exception) {
+                    android.util.Log.e("PlayerActivity", "Error building MediaItem: ${e.message}", e)
                     null
                 }
             }
@@ -256,7 +266,54 @@ class PlayerActivity : AppCompatActivity() {
             
             // Ensure currentIndex is valid
             val validIndex = currentIndex.coerceIn(0, mediaItems.size - 1)
+            android.util.Log.d("PlayerActivity", "Setting ${mediaItems.size} media items, starting at index $validIndex")
             exoPlayer.setMediaItems(mediaItems, validIndex, 0)
+        }
+    }
+    
+    /**
+     * Infer MIME type from URL for network streams and local files
+     */
+    private fun inferMimeType(url: String): String? {
+        val lowercaseUrl = url.lowercase()
+        
+        // Try to get MIME type from ContentResolver for content:// URIs
+        if (url.startsWith("content://")) {
+            try {
+                val uri = Uri.parse(url)
+                val mimeType = contentResolver.getType(uri)
+                if (!mimeType.isNullOrEmpty()) {
+                    android.util.Log.d("PlayerActivity", "Got MIME type from ContentResolver: $mimeType")
+                    return mimeType
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("PlayerActivity", "Error getting MIME type from ContentResolver", e)
+            }
+        }
+        
+        return when {
+            // HLS (HTTP Live Streaming)
+            lowercaseUrl.contains(".m3u8") || lowercaseUrl.contains("m3u8") -> MimeTypes.APPLICATION_M3U8
+            // DASH (Dynamic Adaptive Streaming over HTTP)
+            lowercaseUrl.contains(".mpd") -> MimeTypes.APPLICATION_MPD
+            // Smooth Streaming
+            lowercaseUrl.contains("/manifest") && lowercaseUrl.contains("ism") -> MimeTypes.APPLICATION_SS
+            // MP4/M4V
+            lowercaseUrl.endsWith(".mp4") || lowercaseUrl.endsWith(".m4v") -> MimeTypes.VIDEO_MP4
+            // MKV
+            lowercaseUrl.endsWith(".mkv") -> MimeTypes.VIDEO_MATROSKA
+            // WebM
+            lowercaseUrl.endsWith(".webm") -> MimeTypes.VIDEO_WEBM
+            // TS (Transport Stream)
+            lowercaseUrl.endsWith(".ts") -> MimeTypes.VIDEO_MP2T
+            // 3GP
+            lowercaseUrl.endsWith(".3gp") -> MimeTypes.VIDEO_H263
+            // AVI
+            lowercaseUrl.endsWith(".avi") -> "video/avi"
+            // FLV
+            lowercaseUrl.endsWith(".flv") -> MimeTypes.VIDEO_FLV
+            // For unknown URLs, let ExoPlayer figure it out
+            else -> null
         }
     }
 
