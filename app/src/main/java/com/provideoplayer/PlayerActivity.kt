@@ -86,6 +86,7 @@ class PlayerActivity : AppCompatActivity() {
     
     // Control visibility
     private val hideHandler = Handler(Looper.getMainLooper())
+    private val progressHandler = Handler(Looper.getMainLooper()) // Separate handler for progress updates
     private var controlsVisible = true
     private var isLocked = false
     
@@ -1035,16 +1036,17 @@ class PlayerActivity : AppCompatActivity() {
     private val progressRunnable = object : Runnable {
         override fun run() {
             updateProgress()
-            hideHandler.postDelayed(this, 1000)
+            progressHandler.postDelayed(this, 500) // Update every 500ms for smoother progress
         }
     }
 
     private fun startProgressUpdates() {
-        hideHandler.post(progressRunnable)
+        progressHandler.removeCallbacks(progressRunnable) // Remove any pending callbacks first
+        progressHandler.post(progressRunnable)
     }
 
     private fun stopProgressUpdates() {
-        hideHandler.removeCallbacks(progressRunnable)
+        progressHandler.removeCallbacks(progressRunnable)
     }
 
     private fun updateProgress() {
@@ -1117,6 +1119,7 @@ class PlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         hideHandler.removeCallbacksAndMessages(null)
+        progressHandler.removeCallbacksAndMessages(null) // Clean up progress handler too
         player?.release()
         player = null
     }
