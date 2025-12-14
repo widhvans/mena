@@ -196,13 +196,10 @@ class PlayerActivity : AppCompatActivity() {
             return
         }
         
-        android.util.Log.d("PlayerActivity", "Initializing player with ${playlist.size} videos")
-        
         // Track selector - NO quality restrictions
         trackSelector = DefaultTrackSelector(this).apply {
             setParameters(buildUponParameters()
                 .setForceHighestSupportedBitrate(true) // Always use best quality
-                .setRendererDisabled(C.TRACK_TYPE_VIDEO, false) // Ensure video renderer is enabled
             )
         }
         
@@ -218,28 +215,20 @@ class PlayerActivity : AppCompatActivity() {
             )
             .setHandleAudioBecomingNoisy(true)
             .build()
-        
-        // Configure player and view
-        player?.let { exoPlayer ->
-            // Add listener FIRST
-            exoPlayer.addListener(playerListener)
-            
-            // Set PlayerView - this attaches the video output
-            binding.playerView.player = exoPlayer
-            binding.playerView.useController = false // Use custom controls
-            
-            android.util.Log.d("PlayerActivity", "PlayerView attached to player")
-            
-            // Load playlist AFTER view is attached
-            loadPlaylist()
-            
-            // Start playback
-            android.util.Log.d("PlayerActivity", "Calling prepare()")
-            exoPlayer.prepare()
-            exoPlayer.playWhenReady = true
-            
-            android.util.Log.d("PlayerActivity", "Player prepared, playWhenReady=true")
-        }
+            .also { exoPlayer ->
+                binding.playerView.player = exoPlayer
+                binding.playerView.useController = false // Use custom controls
+                
+                // Add listener
+                exoPlayer.addListener(playerListener)
+                
+                // Load playlist
+                loadPlaylist()
+                
+                // Start playback
+                exoPlayer.prepare()
+                exoPlayer.playWhenReady = true
+            }
     }
 
     private fun loadPlaylist() {
@@ -249,36 +238,13 @@ class PlayerActivity : AppCompatActivity() {
                 return@let
             }
             
-            android.util.Log.d("PlayerActivity", "Loading playlist with ${playlist.size} items")
-            
-            val mediaItems = playlist.mapIndexedNotNull { index, uriString ->
+            val mediaItems = playlist.mapNotNull { uriString ->
                 try {
                     val uri = Uri.parse(uriString)
-                    android.util.Log.d("PlayerActivity", "Creating MediaItem $index: $uri")
-                    
-                    // Determine MIME type based on URI scheme
-                    val mimeType = when {
-                        uriString.contains(".mp4", ignoreCase = true) -> MimeTypes.VIDEO_MP4
-                        uriString.contains(".mkv", ignoreCase = true) -> MimeTypes.VIDEO_MATROSKA
-                        uriString.contains(".webm", ignoreCase = true) -> MimeTypes.VIDEO_WEBM
-                        uriString.contains(".avi", ignoreCase = true) -> MimeTypes.VIDEO_H264
-                        uriString.contains(".mov", ignoreCase = true) -> MimeTypes.VIDEO_MP4
-                        uriString.contains(".m4v", ignoreCase = true) -> MimeTypes.VIDEO_MP4
-                        uriString.contains(".3gp", ignoreCase = true) -> MimeTypes.VIDEO_H263
-                        uriString.contains(".flv", ignoreCase = true) -> MimeTypes.VIDEO_FLV
-                        uriString.contains(".m3u8", ignoreCase = true) -> MimeTypes.APPLICATION_M3U8
-                        uriString.contains(".mpd", ignoreCase = true) -> MimeTypes.APPLICATION_MPD
-                        uri.scheme == "content" -> MimeTypes.VIDEO_MP4 // Default for content URIs
-                        else -> null // Let ExoPlayer auto-detect
-                    }
-                    
-                    val builder = MediaItem.Builder().setUri(uri)
-                    if (mimeType != null) {
-                        builder.setMimeType(mimeType)
-                    }
-                    builder.build()
+                    MediaItem.Builder()
+                        .setUri(uri)
+                        .build()
                 } catch (e: Exception) {
-                    android.util.Log.e("PlayerActivity", "Error creating MediaItem for: $uriString", e)
                     null
                 }
             }
@@ -288,13 +254,9 @@ class PlayerActivity : AppCompatActivity() {
                 return@let
             }
             
-            android.util.Log.d("PlayerActivity", "Setting ${mediaItems.size} media items to player")
-            
             // Ensure currentIndex is valid
             val validIndex = currentIndex.coerceIn(0, mediaItems.size - 1)
             exoPlayer.setMediaItems(mediaItems, validIndex, 0)
-            
-            android.util.Log.d("PlayerActivity", "Media items set, starting at index $validIndex")
         }
     }
 
@@ -315,14 +277,8 @@ class PlayerActivity : AppCompatActivity() {
                 }
                 Player.STATE_READY -> {
                     binding.progressBar.visibility = View.GONE
-                    // Force hide any shutter/black screen by invalidating the view
-                    binding.playerView.hideController()
-                    binding.playerView.invalidate()
                     updateDuration()
-                    // Start progress updates when ready
-                    updateProgress()
-                    startProgressUpdates()
-                    android.util.Log.d("PlayerActivity", "Video ready - Duration: ${player?.duration}, has video: ${player?.isCurrentMediaItemLive == false || (player?.duration ?: 0) > 0}")
+                    android.util.Log.d("PlayerActivity", "Video ready - Duration: ${player?.duration}")
                 }
                 Player.STATE_ENDED -> {
                     if (currentIndex < playlist.size - 1) {
@@ -341,60 +297,23 @@ class PlayerActivity : AppCompatActivity() {
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             android.util.Log.d("PlayerActivity", "isPlaying changed: $isPlaying")
             updatePlayPauseButton()
-            updateProgress() // Always update progress on state change
             if (isPlaying) {
                 startProgressUpdates()
                 scheduleHideControls()
             } else {
-                // Don't stop progress updates when paused - just update less frequently
+                stopProgressUpdates()
                 showControls()
             }
         }
         
         override fun onPlayerError(error: PlaybackException) {
             android.util.Log.e("PlayerActivity", "Player error: ${error.errorCodeName} - ${error.message}", error)
-            
-            val errorMessage = when {
-                // Audio codec not supported
-                error.errorCode == PlaybackException.ERROR_CODE_DECODER_INIT_FAILED && 
-                    error.message?.contains("audio", ignoreCase = true) == true -> {
-                    "Audio codec not supported. Try a different audio track."
-                }
-                error.errorCode == PlaybackException.ERROR_CODE_AUDIO_TRACK_INIT_FAILED -> {
-                    "Audio initialization failed. Try a different audio track."
-                }
-                error.message?.contains("MediaCodecAudioRenderer", ignoreCase = true) == true -> {
-                    "Audio format not supported on this device. Try a different audio track."
-                }
-                // Video codec not supported
-                error.errorCode == PlaybackException.ERROR_CODE_DECODER_INIT_FAILED -> {
-                    "Video codec not supported"
-                }
-                // Source errors
-                error.errorCode == PlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND -> {
-                    "Video file not found"
-                }
-                error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED -> {
-                    "Network connection failed"
-                }
-                else -> {
-                    "Playback error: ${error.message}"
-                }
-            }
-            
-            Toast.makeText(this@PlayerActivity, errorMessage, Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this@PlayerActivity,
+                "Playback error: ${error.message}",
+                Toast.LENGTH_LONG
+            ).show()
             binding.progressBar.visibility = View.GONE
-            
-            // If audio error, try to continue playing with a different track or without audio
-            if (error.message?.contains("audio", ignoreCase = true) == true ||
-                error.message?.contains("MediaCodecAudioRenderer", ignoreCase = true) == true) {
-                android.util.Log.d("PlayerActivity", "Attempting to recover from audio error")
-                // Clear audio overrides and let ExoPlayer choose a compatible track
-                trackSelector.setParameters(
-                    trackSelector.buildUponParameters()
-                        .clearOverridesOfType(C.TRACK_TYPE_AUDIO)
-                )
-            }
         }
         
         override fun onTracksChanged(tracks: Tracks) {
@@ -409,19 +328,6 @@ class PlayerActivity : AppCompatActivity() {
             currentIndex = player?.currentMediaItemIndex ?: 0
             binding.videoTitle.text = playlistTitles.getOrNull(currentIndex) ?: "Video"
             updatePrevNextButtons()
-        }
-        
-        override fun onVideoSizeChanged(videoSize: androidx.media3.common.VideoSize) {
-            android.util.Log.d("PlayerActivity", "Video size changed: ${videoSize.width}x${videoSize.height}")
-            if (videoSize.width > 0 && videoSize.height > 0) {
-                android.util.Log.d("PlayerActivity", "Video has valid dimensions - rendering should work")
-            }
-        }
-        
-        override fun onRenderedFirstFrame() {
-            android.util.Log.d("PlayerActivity", "First frame rendered successfully!")
-            // Hide any loading indicators when first frame is shown
-            binding.progressBar.visibility = View.GONE
         }
     }
 
@@ -886,29 +792,24 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun showAudioTrackDialog() {
         val tracks = player?.currentTracks ?: return
-        
-        // Store group and track index for each audio option
-        data class AudioTrackInfo(val label: String, val group: Tracks.Group, val trackIndex: Int)
-        val audioTracks = mutableListOf<AudioTrackInfo>()
+        // Store track label, group, and track index within the group
+        val audioTracks = mutableListOf<Triple<String, Tracks.Group, Int>>()
         
         for (group in tracks.groups) {
             if (group.type == C.TRACK_TYPE_AUDIO) {
                 for (i in 0 until group.length) {
                     val format = group.getTrackFormat(i)
                     val label = buildString {
-                        append(format.label ?: format.language ?: "Audio ${audioTracks.size + 1}")
+                        append(format.label ?: format.language ?: "Audio")
                         if (format.channelCount > 0) {
                             append(" (${format.channelCount}ch)")
                         }
                         if (format.sampleRate > 0) {
                             append(" ${format.sampleRate / 1000}kHz")
                         }
-                        // Add codec info for debugging
-                        format.codecs?.let { codec ->
-                            append(" [$codec]")
-                        }
                     }
-                    audioTracks.add(AudioTrackInfo(label, group, i))
+                    // Store track index 'i' for proper selection
+                    audioTracks.add(Triple(label, group, i))
                 }
             }
         }
@@ -918,37 +819,19 @@ class PlayerActivity : AppCompatActivity() {
             return
         }
         
-        val names = audioTracks.map { it.label }.toTypedArray()
-        
-        // Find currently selected track
-        var selectedIndex = 0
-        for ((index, trackInfo) in audioTracks.withIndex()) {
-            if (trackInfo.group.isTrackSelected(trackInfo.trackIndex)) {
-                selectedIndex = index
-                break
-            }
-        }
+        val names = audioTracks.map { it.first }.toTypedArray()
         
         MaterialAlertDialogBuilder(this)
             .setTitle("Audio Track")
-            .setSingleChoiceItems(names, selectedIndex) { dialog, which ->
-                try {
-                    val trackInfo = audioTracks[which]
-                    android.util.Log.d("PlayerActivity", "Selecting audio track: ${trackInfo.label}, index: ${trackInfo.trackIndex}")
-                    
-                    // Set the track override with correct track index
-                    trackSelector.setParameters(
-                        trackSelector.buildUponParameters()
-                            .clearOverridesOfType(C.TRACK_TYPE_AUDIO)
-                            .setOverrideForType(
-                                TrackSelectionOverride(trackInfo.group.mediaTrackGroup, trackInfo.trackIndex)
-                            )
-                    )
-                    Toast.makeText(this, "Audio: ${trackInfo.label}", Toast.LENGTH_SHORT).show()
-                } catch (e: Exception) {
-                    android.util.Log.e("PlayerActivity", "Error selecting audio track", e)
-                    Toast.makeText(this, "Failed to switch audio track", Toast.LENGTH_SHORT).show()
-                }
+            .setItems(names) { dialog, which ->
+                val (_, group, trackIndex) = audioTracks[which]
+                trackSelector.setParameters(
+                    trackSelector.buildUponParameters()
+                        .setOverrideForType(
+                            TrackSelectionOverride(group.mediaTrackGroup, trackIndex)
+                        )
+                )
+                Toast.makeText(this, "Audio track changed", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             }
             .show()
@@ -1022,44 +905,40 @@ class PlayerActivity : AppCompatActivity() {
     private val progressRunnable = object : Runnable {
         override fun run() {
             updateProgress()
-            hideHandler.postDelayed(this, 500) // Update more frequently (every 500ms)
+            hideHandler.postDelayed(this, 1000)
         }
     }
-    private var isProgressUpdateRunning = false
 
     private fun startProgressUpdates() {
-        if (!isProgressUpdateRunning) {
-            isProgressUpdateRunning = true
-            hideHandler.post(progressRunnable)
-        }
+        hideHandler.post(progressRunnable)
     }
 
     private fun stopProgressUpdates() {
-        isProgressUpdateRunning = false
         hideHandler.removeCallbacks(progressRunnable)
     }
 
     private fun updateProgress() {
-        player?.let { exoPlayer ->
-            val position = exoPlayer.currentPosition
-            val duration = exoPlayer.duration
-            
-            // Check for valid duration (not TIME_UNSET and positive)
-            val validDuration = if (duration != C.TIME_UNSET && duration > 0) duration else 0L
+        player?.let {
+            val position = it.currentPosition
+            // Check for C.TIME_UNSET which ExoPlayer uses for unknown duration
+            val duration = it.duration.takeIf { d -> d > 0 && d != C.TIME_UNSET } ?: 0
             
             binding.currentTime.text = formatTime(position)
-            binding.totalTime.text = formatTime(validDuration)
+            binding.totalTime.text = formatTime(duration)
             
-            if (validDuration > 0) {
-                val progress = ((position.toFloat() / validDuration) * 100).toInt().coerceIn(0, 100)
-                binding.seekBar.progress = progress
+            if (duration > 0) {
+                binding.seekBar.progress = (position * 100 / duration).toInt()
             }
         }
     }
 
     private fun updateDuration() {
         player?.let {
-            binding.totalTime.text = formatTime(it.duration)
+            val duration = it.duration
+            // Only update if duration is valid (not C.TIME_UNSET)
+            if (duration > 0 && duration != C.TIME_UNSET) {
+                binding.totalTime.text = formatTime(duration)
+            }
         }
     }
 

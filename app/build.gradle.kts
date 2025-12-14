@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-parcelize") // For Parcelable support
 }
 
 android {
@@ -35,8 +34,6 @@ android {
     }
 
     compileOptions {
-        // Enable core library desugaring for FFmpeg decoder
-        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -51,9 +48,6 @@ android {
 }
 
 dependencies {
-    // Core library desugaring - Required for FFmpeg decoder
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
-    
     // AndroidX Core
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -62,7 +56,6 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.cardview:cardview:1.0.0")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     
     // Material Design
     implementation("com.google.android.material:material:1.11.0")
@@ -71,13 +64,9 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:1.2.0")
     implementation("androidx.media3:media3-exoplayer-dash:1.2.0")
     implementation("androidx.media3:media3-exoplayer-hls:1.2.0")
-    implementation("androidx.media3:media3-exoplayer-rtsp:1.2.0") // RTSP streaming
     implementation("androidx.media3:media3-ui:1.2.0")
     implementation("androidx.media3:media3-session:1.2.0")
     implementation("androidx.media3:media3-common:1.2.0")
-    // FFmpeg decoder - Pre-built by Jellyfin with DTS, AC3, EAC3, TrueHD, FLAC support
-    // This provides software decoding for audio formats not supported by Android hardware
-    implementation("org.jellyfin.media3:media3-ffmpeg-decoder:1.3.1+2")
     
     // Glide for image/thumbnail loading
     implementation("com.github.bumptech.glide:glide:4.16.0")
